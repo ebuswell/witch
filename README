@@ -1,0 +1,23 @@
+libwitch is a library that intends to make the C language more
+functional.  It extends and makes use of atomic kit. At this point,
+currying is dependent on libffi, but more efficient versions could be
+created.
+
+See the file 'INSTALL' for generic instructions on how to compile and
+install this software.
+
+----------------------------------------------------------------------
+
+libwitch is Copyright 2013 Evan Buswell
+
+libwitch is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, version 2.
+
+libwitch is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pasunpipe.  If not, see <http://www.gnu.org/licenses/>.
