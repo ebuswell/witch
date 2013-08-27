@@ -31,9 +31,9 @@ libwitchinclude_HEADERS = include/witch.h
 pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = libwitch.pc
 
-check_PROGRAMS = test
-test_SOURCES = src/test.c
-test_LDADD = $(ATOMICKIT_LIBS) $(LIBFFI_LIBS) -lwitch
-test_LDFLAGS = $(LD_FLAGS) -rpath $(libdir)
-test_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS) -Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Iinclude
-TESTS = test
+check_PROGRAMS = unittest
+unittest_SOURCES = test/main.c
+unittest_LDADD = $(ATOMICKIT_LIBS) $(LIBFFI_LIBS) -lwitch
+unittest_LDFLAGS = $(LD_FLAGS) -rpath $(libdir)
+unittest_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS) -Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Iinclude
+TESTS = unittest
