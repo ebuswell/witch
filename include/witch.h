@@ -21,8 +21,28 @@
 #ifndef WITCH_H
 #define WITCH_H 1
 
+#include <atomickit/atomic-rcp.h>
+
 void free_curried_function(void *f);
 
 void *curry(void *fptr, char *signature, ...);
+
+struct afptr {
+    struct arcp_region;
+    void *fptr;
+};
+
+static inline void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *)) {
+    afptr->fptr = fptr;
+    arcp_region_init(fptr, (void (*)(struct arcp_region *)) destroy);
+}
+
+static inline void *afptr_fptr(struct afptr *afptr) {
+    return afptr->fptr;
+}
+
+void *afptr_create_dispatch_f(arcp_t *arcp, char *signature);
+
+void afptr_free_dispatch_f(void *f);
 
 #endif /* ! WITCH_H */
