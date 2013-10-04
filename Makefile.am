@@ -24,7 +24,7 @@ lib_LTLIBRARIES = libwitch.la
 libwitch_la_SOURCES = src/witch.c
 libwitch_la_LIBADD = $(ATOMICKIT_LIBS) $(LIBFFI_LIBS)
 libwitch_la_LDFLAGS = -L$(libdir) -export-dynamic -version_info @VERSION_INFO@
-libwitch_la_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS)-Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Iinclude
+libwitch_la_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS) -Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Wdeclaration-after-statement -Iinclude
 libwitchincludedir = $(includedir)
 libwitchinclude_HEADERS = include/witch.h
 
@@ -35,5 +35,5 @@ check_PROGRAMS = unittest
 unittest_SOURCES = test/main.c
 unittest_LDADD = $(ATOMICKIT_LIBS) $(LIBFFI_LIBS) -lwitch
 unittest_LDFLAGS = $(LD_FLAGS) -rpath $(libdir)
-unittest_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS) -Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Iinclude
+unittest_CFLAGS = $(CFLAGS) $(ATOMICKIT_CFLAGS) $(LIBFFI_CFLAGS) -Og -g3 -Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Wdeclaration-after-statement -Iinclude
 TESTS = unittest

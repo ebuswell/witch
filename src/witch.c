@@ -343,11 +343,11 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type, bool *stas
 }
 
 static int scanf_parsenargs(char *str, int *nargs, int *stashed_nargs) {
-    *nargs = -1;
-    *stashed_nargs = 0;
     enum argtype type;
     bool stashed;
     int parse_i = 0;
+    *nargs = -1;
+    *stashed_nargs = 0;
     while((parse_i = scanf_parsenext(str, parse_i, &type, &stashed)) > 0) {
 	if(type == ARGT_VOID) {
 	    break;
@@ -394,7 +394,7 @@ struct curried_function {
      + sizeof(ffi_type *) * (curried_nargs))
 
 static void run_curried_function(ffi_cif *curried_cif __attribute__((unused)), void *result, void **curried_args, struct curried_function *f) {
-    void **plain_args = alloca(sizeof(void *) * f->plain_cif.nargs);
+    void *plain_args[f->plain_cif.nargs];
     unsigned int plain_i = 0;
     unsigned int curried_i = 0;
     unsigned int stashed_i = 0;
@@ -577,7 +577,8 @@ struct afptr_dispatch {
 };
 
 static void run_dispatch_function(ffi_cif *cif, void *result, void **args, arcp_t *arcp) {
-    struct afptr *afptr = (struct afptr *) arcp_load(arcp);
+    struct afptr *afptr;
+    afptr = (struct afptr *) arcp_load(arcp);
     if(afptr == NULL) {
 	if(cif->rtype == &ffi_type_void) {
 	    return;

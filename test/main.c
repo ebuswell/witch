@@ -7,6 +7,7 @@ static int test_f(int a, int b) {
 }
 
 int main(int argc __attribute__((unused)), char **argv __attribute__((unused))) {
+    int r;
     int (*testf1)(int b);
     int (*testf2)(int a);
 
@@ -21,7 +22,6 @@ int main(int argc __attribute__((unused)), char **argv __attribute__((unused))) 
 	exit(EXIT_FAILURE);
     }
 
-    int r;
     if((r = testf1(1)) != 3) {
 	fprintf(stderr, "Instead of 3, 1 + 2 * (1) was %d\n", r);
 	exit(EXIT_FAILURE);
