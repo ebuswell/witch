@@ -1,11 +1,11 @@
 prefix=@prefix@
-exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
 Name: libwitch
-Requires: atomickit libffi
+Requires: atomickit, libffi
 Description: A library implementing functional programming in C.
-Version: @LIBWITCH_VERSION@
-Libs: -lwitch
-Cflags: -I${includedir}
+Version: @version@
+Libs: -L${libdir} -lwitch
+Libs.private: ${libdir}/libwitch.a
+Cflags: -fplan9-extensions -I${includedir}

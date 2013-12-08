@@ -23,19 +23,16 @@
 
 #include <atomickit/atomic-rcp.h>
 
-void free_curried_function(void *f);
-
 void *curry(void *fptr, char *signature, ...);
+
+void free_curried_function(void *f);
 
 struct afptr {
     struct arcp_region;
     void *fptr;
 };
 
-static inline void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *)) {
-    afptr->fptr = fptr;
-    arcp_region_init(fptr, (void (*)(struct arcp_region *)) destroy);
-}
+void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *));
 
 static inline void *afptr_fptr(struct afptr *afptr) {
     return afptr->fptr;

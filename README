@@ -3,8 +3,8 @@ functional.  It extends and makes use of atomic kit. At this point,
 currying is dependent on libffi, but more efficient versions could be
 created.
 
-See the file 'INSTALL' for generic instructions on how to compile and
-install this software.
+To compile and install, link or copy config.def.mk to config.mk and run "make"
+and "make install".
 
 ----------------------------------------------------------------------
 

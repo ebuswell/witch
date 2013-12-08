@@ -347,12 +347,14 @@ static int scanf_parsenargs(char *str, int *nargs, int *stashed_nargs) {
     bool stashed;
     int parse_i = 0;
     *nargs = -1;
-    *stashed_nargs = 0;
+    if(stashed_nargs != NULL) {
+	*stashed_nargs = 0;
+    }
     while((parse_i = scanf_parsenext(str, parse_i, &type, &stashed)) > 0) {
+	(*nargs)++;
 	if(type == ARGT_VOID) {
 	    break;
 	}
-	(*nargs)++;
 	if(stashed && stashed_nargs != NULL) {
 	    (*stashed_nargs)++;
 	}
@@ -377,6 +379,10 @@ static int scanf_parsenargs(char *str, int *nargs, int *stashed_nargs) {
     }
     return 0;
 }
+
+/************
+ * Currying *
+ ************/
 
 struct curried_function {
     ffi_closure closure;
@@ -570,6 +576,15 @@ void *curry(void *fptr, char *signature, ...) {
     return ret;
 }
 
+/************
+ * Dispatch *
+ ************/
+
+void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *)) {
+    afptr->fptr = fptr;
+    arcp_region_init(afptr, (void (*)(struct arcp_region *)) destroy);
+}
+
 struct afptr_dispatch {
     ffi_closure closure;
     ffi_cif cif;
@@ -622,6 +637,7 @@ void *afptr_create_dispatch_f(arcp_t *arcp, char *signature) {
 
     r = scanf_parsenargs(signature, &nargs, NULL);
     if(r != 0) {
+	errno = EINVAL;
 	return NULL;
     }
 
