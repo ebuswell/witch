@@ -1,10 +1,20 @@
 libwitch is a library that intends to make the C language more
-functional.  It extends and makes use of atomic kit. At this point,
-currying is dependent on libffi, but more efficient versions could be
-created.
+functional.
 
-To compile and install, link or copy config.def.mk to config.mk and run "make"
-and "make install".
+Requirements
+------------
+libwitch extends and makes use of atomickit. At the moment both should be the
+latest git. At this point, currying is dependent on libffi, but more efficient
+versions could be created.
+
+Installation
+------------
+Link config.def.mk to config.mk, or copy config.def.mk to config.mk and edit
+to match your local setup (this is installed under /usr/local by default).
+Then enter the following commands:
+
+	make
+	sudo make install
 
 ----------------------------------------------------------------------
 
