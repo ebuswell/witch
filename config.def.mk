@@ -10,12 +10,12 @@ LDFLAGS?=
 AR?=ar
 ARFLAGS?=rv
 
-ATOMICKIT_CFLAGS!=pkg-config --cflags atomickit
-ATOMICKIT_LIBS!=pkg-config --libs atomickit
-ATOMICKIT_STATIC!=pkg-config --static atomickit
-LIBFFI_CFLAGS!=pkg-config --cflags libffi
-LIBFFI_LIBS!=pkg-config --libs libffi
-LIBFFI_STATIC!=pkg-config --static libffi
+ATOMICKIT_CFLAGS=${shell pkg-config --cflags atomickit}
+ATOMICKIT_LIBS=${shell pkg-config --libs atomickit}
+ATOMICKIT_STATIC=${shell pkg-config --static atomickit}
+LIBFFI_CFLAGS=${shell pkg-config --cflags libffi}
+LIBFFI_LIBS=${shell pkg-config --libs libffi}
+LIBFFI_STATIC=${shell pkg-config --static libffi}
 
 CFLAGS+=${ATOMICKIT_CFLAGS} ${LIBFFI_CFLAGS}
 CFLAGS+=-Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Wdeclaration-after-statement

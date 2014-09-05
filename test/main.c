@@ -19,12 +19,12 @@ int main(int argc __attribute__((unused)), char **argv __attribute__((unused))) 
     struct afptr fptr1;
     struct afptr fptr2;
 
-    testfp_c1 = (int (*)(int)) curry(test1_f, "%i$, %i -> %i", 1);
+    testfp_c1 = (int (*)(int)) papf_create(test1_f, "%i$, %i -> %i", 1);
     if(testfp_c1 == NULL) {
 	fprintf(stderr, "Received NULL result on first curry attempt\n");
 	exit(EXIT_FAILURE);
     }
-    testfp_c2 = (int (*)(int)) curry(test1_f, "%i, %i$ -> %i", 2);
+    testfp_c2 = (int (*)(int)) papf_create(test1_f, "%i, %i$ -> %i", 2);
     if(testfp_c2 == NULL) {
 	fprintf(stderr, "Received NULL result on second curry attempt\n");
 	exit(EXIT_FAILURE);
@@ -39,15 +39,15 @@ int main(int argc __attribute__((unused)), char **argv __attribute__((unused))) 
 	exit(EXIT_FAILURE);
     }
 
-    free_curried_function(testfp_c1);
-    free_curried_function(testfp_c2);
+    papf_free(testfp_c1);
+    papf_free(testfp_c2);
 
     afptr_init(&fptr1, test1_f, NULL);
     afptr_init(&fptr2, test2_f, NULL);
 
     arcp_init(&dispatch, &fptr1);
 
-    testfp_d = (int (*)(int, int)) afptr_create_dispatch_f(&dispatch, "%i, %i -> %i");
+    testfp_d = (int (*)(int, int)) afptr_dispatch_create(&dispatch, "%i, %i -> %i");
     if(testfp_d == NULL) {
 	fprintf(stderr, "Received NULL result on dispatch function creation\n");
 	exit(EXIT_FAILURE);
@@ -68,7 +68,7 @@ int main(int argc __attribute__((unused)), char **argv __attribute__((unused))) 
     arcp_store(&dispatch, NULL);
     arcp_release(&fptr1);
     arcp_release(&fptr2);
-    afptr_free_dispatch_f(testfp_d);
+    afptr_dispatch_free(testfp_d);
 
     exit(EXIT_SUCCESS);
 }

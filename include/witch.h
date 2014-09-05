@@ -1,5 +1,8 @@
+/**
+ * @file witch.h
+ */
 /*
- * libwitch.h
+ * witch.h
  * 
  * Copyright 2013 Evan Buswell
  * 
@@ -21,25 +24,76 @@
 #ifndef WITCH_H
 #define WITCH_H 1
 
-#include <atomickit/atomic-rcp.h>
+#include <atomickit/rcp.h>
 
-void *curry(void *fptr, char *signature, ...);
+/**
+ * Create a partial function application.
+ *
+ * @param fptr the function to create a partial application of.
+ * @param signature the signature describing the partial application.
+ * @param ... the variables to apply to the function in accord with the
+ * signature.
+ *
+ * @returns the partial function application.
+ */
+void *papf_create(void *fptr, char *signature, ...);
 
-void free_curried_function(void *f);
+/**
+ * Free a previously created partial function application.
+ *
+ * @param f the partial function application to free.
+ */
+void papf_free(void *f);
 
+/**
+ * Atomic function pointer.
+ */
 struct afptr {
-    struct arcp_region;
-    void *fptr;
+	struct arcp_region;
+	void *fptr; /**< The function pointer the atomic function pointer
+	             *   points to. */
 };
 
+/**
+ * Initialize atomic function pointer.
+ *
+ * @param afptr the atomic function pointer to initialize.
+ * @param fptr the function pointer the atomic function pointer points to.
+ * @param destroy destruction function for the atomic function pointer.
+ */
 void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *));
 
+/**
+ * Get the function pointer for an atomic function pointer.
+ *
+ * @param afptr the atomic function pointer to get the function pointer from.
+ *
+ * @returns the function pointer.
+ */
 static inline void *afptr_fptr(struct afptr *afptr) {
-    return afptr->fptr;
+	return afptr->fptr;
 }
 
-void *afptr_create_dispatch_f(arcp_t *arcp, char *signature);
+/**
+ * Create a function pointer dispatch function.
+ *
+ * A function pointer dispatch relays calls to the atomic function pointer held
+ * by an arcp pointer.
+ *
+ * @param arcp the arcp pointer which will hold the atomic function pointer to
+ * dispatch to.
+ * @param signature the signature of the atomic function pointer.
+ *
+ * @returns a function pointer dispatch to the function held by the arcp
+ * pointer.
+ */
+void *afptr_dispatch_create(arcp_t *arcp, char *signature);
 
-void afptr_free_dispatch_f(void *f);
+/**
+ * Free the function pointer dispatch.
+ *
+ * @param f the function pointer dispatch to free.
+ */
+void afptr_dispatch_free(void *f);
 
 #endif /* ! WITCH_H */
