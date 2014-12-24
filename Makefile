@@ -12,7 +12,7 @@ VERSION=0.1
 
 SRCS=src/witch.c
 
-TESTSRCS=test/main.c
+TESTSRCS=test/main.c test/test.c test/test_witch_h.c
 
 HEADERS=include/witch.h
 
