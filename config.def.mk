@@ -18,7 +18,8 @@ LIBFFI_LIBS=${shell pkg-config --libs libffi}
 LIBFFI_STATIC=${shell pkg-config --static libffi}
 
 CFLAGS+=${ATOMICKIT_CFLAGS} ${LIBFFI_CFLAGS}
-CFLAGS+=-Wall -Wextra -Wmissing-prototypes -Wredundant-decls -Wdeclaration-after-statement
+CFLAGS+=-Wall -Wextra -Wmissing-prototypes -Wredundant-decls \
+	-Wdeclaration-after-statement
 CFLAGS+=-fplan9-extensions
 CFLAGS+=-Iinclude
 

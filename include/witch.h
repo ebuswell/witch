@@ -4,21 +4,21 @@
 /*
  * witch.h
  * 
- * Copyright 2013 Evan Buswell
+ * Copyright 2014 Evan Buswell
  * 
  * This file is part of libwitch.
  * 
- * libwitch is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, version 2.
+ * libwitch is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version 2.
  * 
- * libwitch is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * libwitch is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with libwitch.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along
+ * with libwitch.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef WITCH_H
@@ -51,7 +51,7 @@ void papf_free(void *f);
 struct afptr {
 	struct arcp_region;
 	void *fptr; /**< The function pointer the atomic function pointer
-	             *   points to. */
+		     *   points to. */
 };
 
 /**
@@ -61,7 +61,8 @@ struct afptr {
  * @param fptr the function pointer the atomic function pointer points to.
  * @param destroy destruction function for the atomic function pointer.
  */
-void afptr_init(struct afptr *afptr, void *fptr, void (*destroy)(struct afptr *));
+void afptr_init(struct afptr *afptr, void *fptr,
+		void (*destroy)(struct afptr *));
 
 /**
  * Get the function pointer for an atomic function pointer.
@@ -77,8 +78,8 @@ static inline void *afptr_fptr(struct afptr *afptr) {
 /**
  * Create a function pointer dispatch function.
  *
- * A function pointer dispatch relays calls to the atomic function pointer held
- * by an arcp pointer.
+ * A function pointer dispatch relays calls to the atomic function pointer
+ * held by an arcp pointer.
  *
  * @param arcp the arcp pointer which will hold the atomic function pointer to
  * dispatch to.

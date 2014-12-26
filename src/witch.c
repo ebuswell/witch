@@ -1,3 +1,22 @@
+/*
+ * witch.c
+ * 
+ * Copyright 2014 Evan Buswell
+ * 
+ * This file is part of libwitch.
+ * 
+ * libwitch is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version 2.
+ * 
+ * libwitch is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with libwitch.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <stdint.h>
 #include <stddef.h>
 #include <limits.h>
@@ -64,7 +83,7 @@ struct stashed_arg {
 
 /* transform our argtype to FFI's ffi_type */
 static ffi_type *argt2ffit(enum argtype type) {
-	switch(type) {
+	switch (type) {
 	case ARGT_UCHAR:
 		return &ffi_type_uchar;
 	case ARGT_SCHAR:
@@ -190,14 +209,14 @@ static ffi_type *argt2ffit(enum argtype type) {
  * were parsed, zero if all arguments have been parsed, or negative on
  * error. */
 static int scanf_parsenext(char *str, int offset, enum argtype *type,
-                           bool *stash) {
+			   bool *stash) {
 	char size;
-	while(str[offset] != '\0') {
-		if(str[offset++] != '%') {
+	while (str[offset] != '\0') {
+		if (str[offset++] != '%') {
 			/* ignore characters between percents */
 			continue;
 		}
-		if(str[offset] == '%') {
+		if (str[offset] == '%') {
 			/* a double percent is a literal percent; ignore
  			 * it */
 			offset++;
@@ -205,9 +224,9 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 		}
 
 		/* first deal with a potential size modification */
-		switch(str[offset]) {
+		switch (str[offset]) {
 		case 'h':
-			if(str[++offset] == 'h') {
+			if (str[++offset] == 'h') {
 				size = 'H';
 				offset++;
 			} else {
@@ -215,7 +234,7 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 			}
 			break;
 		case 'l':
-			if(str[++offset] == 'l') {
+			if (str[++offset] == 'l') {
 				size = 'L';
 				offset++;
 			} else {
@@ -243,11 +262,11 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 			/* no size modification, use the default size */
 			size = ' ';
 		}
-		switch(str[offset++]) {
+		switch (str[offset++]) {
 		case 'd':
 		case 'i':
 			/* signed integral type */
-			switch(size) {
+			switch (size) {
 			case 'H':
 				*type = ARGT_SCHAR;
 				break;
@@ -281,7 +300,7 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 		case 'x':
 		case 'X':
 			/* unsigned integral type */
-			switch(size) {
+			switch (size) {
 			case 'H':
 				*type = ARGT_UCHAR;
 				break;
@@ -316,7 +335,7 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 		case 'E':
 		case 'a':
 			/* floating type */
-			switch(size) {
+			switch (size) {
 			case ' ':
 				*type = ARGT_FLOAT;
 				break;
@@ -334,14 +353,14 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 		case 'c':
 		case 'p':
 			/* string/pointer type */
-			if(size != ' ') {
+			if (size != ' ') {
 				return -1;
 			}
 			*type = ARGT_PTR;
 			break;
 		case 'v':
 			/* void type, for return value */
-			if(size != ' ') {
+			if (size != ' ') {
 				return -1;
 			}
 			*type = ARGT_VOID;
@@ -350,8 +369,8 @@ static int scanf_parsenext(char *str, int offset, enum argtype *type,
 			return -1;
 		}
 		/* see if it's marked to be stashed */
-		if(stash != NULL) {
-			if(str[offset] == '$') {
+		if (stash != NULL) {
+			if (str[offset] == '$') {
 				offset++;
 				*stash = true;
 			} else {
@@ -371,33 +390,33 @@ static int scanf_parsenargs(char *str, int *nargs, int *stashed_nargs) {
 	bool stashed;
 	int parse_i = 0;
 	*nargs = -1;
-	if(stashed_nargs != NULL) {
+	if (stashed_nargs != NULL) {
 		*stashed_nargs = 0;
 	}
-	while((parse_i = scanf_parsenext(str, parse_i, &type, &stashed))
-	      > 0) {
+	while ((parse_i = scanf_parsenext(str, parse_i,
+					  &type, &stashed)) > 0) {
 		(*nargs)++;
-		if(type == ARGT_VOID) {
+		if (type == ARGT_VOID) {
 			break;
 		}
-		if(stashed && stashed_nargs != NULL) {
+		if (stashed && stashed_nargs != NULL) {
 			(*stashed_nargs)++;
 		}
 	}
-	if(parse_i < 0) {
+	if (parse_i < 0) {
 		/* Malformed signature */
 		return -1;
 	}
-	if(*nargs < 0) {
+	if (*nargs < 0) {
 		/* No return argument */
 		return -1;
 	}
-	if(parse_i != 0
-	   && scanf_parsenext(str, parse_i, &type, &stashed) != 0) {
+	if (parse_i != 0
+	    && scanf_parsenext(str, parse_i, &type, &stashed) != 0) {
 		/* void type before the return */
 		return -1;
 	}
-	if(stashed) {
+	if (stashed) {
 		/* Attempted to partially apply the return value -- while
  		 * potentially useful in functions with side effects, this is
  		 * not supported. */
@@ -421,10 +440,10 @@ struct papf {
 	unsigned int stashed_nargs; /* the number of stashed args */
 	struct stashed_arg stashed_args[]; /* [stashed_nargs] */
 	/* ffi_type plain_args[plain_nargs] -- this is appended to the struct,
- 	                                       but C doesn't have semantics
+ 					       but C doesn't have semantics
 					       for that. */
 	/* ffi_type papf_args[papf_nargs] -- this is appended to the struct
- 	                                     after plain_args, but C doesn't
+ 					     after plain_args, but C doesn't
 					     have semantics for that. */
 };
 
@@ -438,15 +457,15 @@ struct papf {
 /* the function that is called by ffi when the partially applied function is
  * called. */
 static void run_papf(ffi_cif *papf_cif __attribute__((unused)), void *result,
-                     void **papf_args, struct papf *f) {
+		     void **papf_args, struct papf *f) {
 	void *plain_args[f->plain_cif.nargs];
 	unsigned int plain_i = 0;
 	unsigned int papf_i = 0;
 	unsigned int stashed_i = 0;
 	/* go through each plain_i and get the appropriate argument for it */
-	while(stashed_i < f->stashed_nargs) {
+	while (stashed_i < f->stashed_nargs) {
 		/* while there are stashed variables to apply... */
-		if(plain_i == f->stashed_args[stashed_i].argnum) {
+		if (plain_i == f->stashed_args[stashed_i].argnum) {
 			/* the next stashed argument should be applied here */
 			plain_args[plain_i++]
 				= &f->stashed_args[stashed_i++].value;
@@ -458,7 +477,7 @@ static void run_papf(ffi_cif *papf_cif __attribute__((unused)), void *result,
 	}
 	/* no more stashed variables; tack on the rest of the passed
  	 * variables */
-	while(plain_i < f->plain_cif.nargs) {
+	while (plain_i < f->plain_cif.nargs) {
 		plain_args[plain_i++] = papf_args[papf_i++];
 	}
 	/* call the original function via ffi */
@@ -467,8 +486,8 @@ static void run_papf(ffi_cif *papf_cif __attribute__((unused)), void *result,
 
 void papf_free(void *f) {
 	afree(f, PAPF_SIZE(((struct papf *) f)->plain_cif.nargs,
-	                   ((struct papf *) f)->papf_cif.nargs,
-	                   ((struct papf *) f)->stashed_nargs));
+			   ((struct papf *) f)->papf_cif.nargs,
+			   ((struct papf *) f)->stashed_nargs));
 }
 
 void *papf_create(void *fptr, char *signature, ...) {
@@ -494,7 +513,7 @@ void *papf_create(void *fptr, char *signature, ...) {
 
 	/* check signature and refuse to move further if it has problems... */
 	r = scanf_parsenargs(signature, &plain_nargs, &stashed_nargs);
-	if(r != 0) {
+	if (r != 0) {
 		errno = EINVAL;
 		return NULL;
 	}
@@ -502,21 +521,21 @@ void *papf_create(void *fptr, char *signature, ...) {
 
 	/* now we can allocate this */
 	ret = amalloc(PAPF_SIZE(plain_nargs, papf_nargs, stashed_nargs));
-	if(ret == NULL) {
+	if (ret == NULL) {
 		return NULL;
 	}
 
 	/* get plain_args, stashed_args, and papf_args from where they should
  	 * be in the structure */
 	plain_args = (ffi_type **) (((void *) ret)
-	                            + sizeof(struct papf)
-	                            + sizeof(struct stashed_arg)
-	                              * stashed_nargs);
+				    + sizeof(struct papf)
+				    + sizeof(struct stashed_arg)
+				      * stashed_nargs);
 	papf_args = (ffi_type **) (((void *) ret)
-	                              + sizeof(struct papf)
-	                              + sizeof(struct stashed_arg)
-	                                * stashed_nargs
-	                              + sizeof(ffi_type *) * plain_nargs);
+				   + sizeof(struct papf)
+				   + sizeof(struct stashed_arg)
+				     * stashed_nargs
+				   + sizeof(ffi_type *) * plain_nargs);
 	stashed_args = ret->stashed_args;
 
 	/* start the variadic parsing */
@@ -524,15 +543,15 @@ void *papf_create(void *fptr, char *signature, ...) {
 
 	/* parse the signature */
 	parse_i = 0;
-	while((parse_i = scanf_parsenext(signature, parse_i, &type, &stashed))
-	      > 0) {
+	while ((parse_i = scanf_parsenext(signature, parse_i,
+					  &type, &stashed)) > 0) {
 		ffit = argt2ffit(type);
-		if(plain_i == plain_nargs) {
+		if (plain_i == plain_nargs) {
 			break;
 		}
-		if(stashed) {
+		if (stashed) {
 			/* get the value */
-			switch(type) {
+			switch (type) {
 			case ARGT_UCHAR:
 				stashed_args[stashed_i].value._uchar
 					= va_arg(ap, unsigned int);
@@ -626,24 +645,24 @@ void *papf_create(void *fptr, char *signature, ...) {
 	/* We've now parsed everything. Now create the function
  	 * descriptors. */
 	fs = ffi_prep_cif(&ret->papf_cif, FFI_DEFAULT_ABI, papf_nargs,
-	                  ffit, papf_args);
-	if(fs != FFI_OK) {
+			  ffit, papf_args);
+	if (fs != FFI_OK) {
 		papf_free(ret);
 		return NULL;
 	}
 	fs = ffi_prep_cif(&ret->plain_cif, FFI_DEFAULT_ABI, plain_nargs,
-	                  ffit, plain_args);
-	if(fs != FFI_OK) {
+			  ffit, plain_args);
+	if (fs != FFI_OK) {
 		papf_free(ret);
 		return NULL;
 	}
 
-	fs = ffi_prep_closure(
-		&ret->closure,
-		&ret->papf_cif,
-		(void (*)(ffi_cif *, void *, void **, void *)) run_papf,
-		ret);
-	if(fs != FFI_OK) {
+	fs = ffi_prep_closure(&ret->closure,
+			      &ret->papf_cif,
+			      (void (*)(ffi_cif *, void *, void **, void *))
+			        run_papf,
+			      ret);
+	if (fs != FFI_OK) {
 		papf_free(ret);
 		return NULL;
 	}
@@ -660,7 +679,7 @@ void *papf_create(void *fptr, char *signature, ...) {
  ************/
 
 void afptr_init(struct afptr *afptr, void *fptr,
-                void (*destroy)(struct afptr *)) {
+		void (*destroy)(struct afptr *)) {
 	afptr->fptr = fptr;
 	arcp_region_init(afptr, (void (*)(struct arcp_region *)) destroy);
 }
@@ -674,16 +693,16 @@ struct afptr_dispatch {
 
 /* the function that is called by ffi when the dispatch function is called. */
 static void run_dispatch(ffi_cif *cif, void *result,
-                         void **args, arcp_t *arcp) {
+			 void **args, arcp_t *arcp) {
 	struct afptr *afptr;
 	afptr = (struct afptr *) arcp_load(arcp);
-	if(afptr == NULL) {
+	if (afptr == NULL) {
 		/* no function to dispatch to; set default return value and
  		 * return */
-		if(cif->rtype == &ffi_type_void) {
+		if (cif->rtype == &ffi_type_void) {
 			return;
 		}
-		switch(cif->rtype->size) {
+		switch (cif->rtype->size) {
 		case 1:
 			*((uint8_t *) result) = '\0';
 		case 2:
@@ -723,7 +742,7 @@ void *afptr_dispatch_create(arcp_t *arcp, char *signature) {
 
 	/* check signature and refuse to move further if it has problems... */
 	r = scanf_parsenargs(signature, &nargs, NULL);
-	if(r != 0) {
+	if (r != 0) {
 		errno = EINVAL;
 		return NULL;
 	}
@@ -734,28 +753,28 @@ void *afptr_dispatch_create(arcp_t *arcp, char *signature) {
 	/* parse signature */
 	arg_i = 0;
 	parse_i = 0;
-	while((parse_i = scanf_parsenext(signature, parse_i, &type, NULL))
-	      > 0) {
+	while ((parse_i = scanf_parsenext(signature, parse_i,
+					  &type, NULL)) > 0) {
 		ffit = argt2ffit(type);
-		if(arg_i == nargs) {
+		if (arg_i == nargs) {
 			break;
 		}
 		ret->args[arg_i++] = ffit;
 	}
 
 	r = ffi_prep_cif(&ret->cif, FFI_DEFAULT_ABI, nargs,
-	                 ffit, ret->args);
-	if(r != FFI_OK) {
+			 ffit, ret->args);
+	if (r != FFI_OK) {
 		afptr_dispatch_free(ret);
 		return NULL;
 	}
 
-	r = ffi_prep_closure(
-		&ret->closure,
-		&ret->cif,
-		(void (*)(ffi_cif *, void *, void **, void *)) run_dispatch,
-		arcp);
-	if(r != FFI_OK) {
+	r = ffi_prep_closure(&ret->closure,
+			     &ret->cif,
+			     (void (*)(ffi_cif *, void *, void **, void *))
+			       run_dispatch,
+			     arcp);
+	if (r != FFI_OK) {
 		afptr_dispatch_free(ret);
 		return NULL;
 	}

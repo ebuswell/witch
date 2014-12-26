@@ -1,8 +1,8 @@
 .PHONY: shared static all install-headers install-pkgconfig install-shared \
-        install-static install-static-strip install-shared-strip \
-        install-all-static install-all-shared install-all-static-strip \
-        install-all-shared-strip install install-strip uninstall clean \
-        check-shared check-static check
+	install-static install-static-strip install-shared-strip \
+	install-all-static install-all-shared install-all-static-strip \
+	install-all-shared-strip install install-strip uninstall clean \
+	check-shared check-static check
 
 .SUFFIXES: .o .pic.o
 
@@ -31,7 +31,8 @@ all: shared libwitch.pc
 	${CC} ${CFLAGS} -fPIC -c $< -o $@
 
 libwitch.so: ${PICOBJS}
-	${CC} ${CFLAGS} ${LDFLAGS} -fPIC -shared ${PICOBJS} ${LIBS} -o libwitch.so
+	${CC} ${CFLAGS} ${LDFLAGS} -fPIC -shared ${PICOBJS} ${LIBS} \
+	      -o libwitch.so
 
 libwitch.a: ${OBJS}
 	rm -f libwitch.a
@@ -67,11 +68,11 @@ install-pkgconfig: libwitch.pc
 install-shared: shared
 	(umask 022; mkdir -p ${DESTDIR}${LIBDIR})
 	install -m 755 libwitch.so \
-	        ${DESTDIR}${LIBDIR}/libwitch.so.${VERSION}
+		${DESTDIR}${LIBDIR}/libwitch.so.${VERSION}
 	ln -frs ${DESTDIR}${LIBDIR}/libwitch.so.${VERSION} \
-	        ${DESTDIR}${LIBDIR}/libwitch.so.${MAJOR}
+		${DESTDIR}${LIBDIR}/libwitch.so.${MAJOR}
 	ln -frs ${DESTDIR}${LIBDIR}/libwitch.so.${VERSION} \
-	        ${DESTDIR}${LIBDIR}/libwitch.so
+		${DESTDIR}${LIBDIR}/libwitch.so
 
 install-static: static
 	(umask 022; mkdir -p ${DESTDIR}${LIBDIR})
@@ -83,9 +84,11 @@ install-shared-strip: install-shared
 install-static-strip: install-static
 	strip --strip-unneeded ${DESTDIR}${LIBDIR}/libwitch.a
 
-install-all-static: static libwitch.pc install-static install-headers install-pkgconfig
+install-all-static: static libwitch.pc install-static install-headers \
+		    install-pkgconfig
 
-install-all-shared: shared libwitch.pc install-shared install-headers install-pkgconfig
+install-all-shared: shared libwitch.pc install-shared install-headers \
+		    install-pkgconfig
 
 install-all-shared-strip: install-all-shared install-shared-strip
 
